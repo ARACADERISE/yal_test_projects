@@ -46,4 +46,4 @@ func get_web_data(!dict-get_response) then
 		file.send(to_json)
 		file.close()
 	
-	print(open_file('status_info.json','r').read_value())
+	print_value(open_file('status_info.json','r').read_value())
