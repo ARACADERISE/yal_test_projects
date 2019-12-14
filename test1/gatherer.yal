@@ -1,0 +1,10 @@
+amount = INTEGER(gather_input('How many domains are you looking for? '))
+domain = []
+for i in range_of(amount) then
+	get_domain = STRING(gather_input(f'Domain #{i+1}: '))
+	if value of 'https' not in get_domain then
+		raise NameError(con'''
+{get_domain} requires https, http\nreceived just the address with no server typed
+		''')
+	domain.append(get_domain)
+get_web_data(responses_from=domain)
