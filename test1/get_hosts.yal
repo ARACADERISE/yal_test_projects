@@ -33,11 +33,11 @@ func get_web_data(!dict-get_response) then
 	}
 
 	for i in range_of(len(hosts['status']['responses'])) then
-		if value of hosts['status']['responses'][i] == 503 then
+		if value of hosts['status']['responses'][i] is equal to 503 then
 			hosts['status']['responses'][i] = hosts['status']['FROM'][i] + ' | '+hosts['status_codes']['503'] + ' | ' + STRING(stat_code[i])
-		if value of hosts['status']['responses'][i] == 200 then
+		if value of hosts['status']['responses'][i] is equal to 200 then
 			hosts['status']['responses'][i] = hosts['status']['FROM'][i] + ' | '+hosts['status_codes']['200'] + ' | ' + STRING(stat_code[i])
-		if value of hosts['status']['responses'][i] == 404 then
+		if value of hosts['status']['responses'][i] is equal to 404 then
 			hosts['status']['responses'][i] = hosts['status']['FROM'][i] + ' | '+hosts['status_codes']['404'] + ' | ' + STRING(stat_code[i])
 	
 	write_file('status_info.json','w') use as file then
