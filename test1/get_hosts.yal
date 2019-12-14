@@ -1,0 +1,49 @@
+-- This will setup hosts for data storing
+func get_web_data(!dict-get_response) then
+	import name requests,json
+	resp = []
+	stat_code = []
+	for i in range_of(get_length(get_response['responses_from'])) then
+		resp.append(get_response['responses_from'][i])
+	for i in range_of(get_length(resp)) then
+		get_resp = requests.get(resp[i])
+		stat_code.append(get_resp.status_code)
+
+
+	hosts = {
+		'o_108':['200','send','recieve'],
+		'o_101':['404','shutdown'],
+		'o_208':['503','server_reject'],
+		'0_111':['302_status','retain','return'],
+		'status_codes':{
+			'503':'Service Unavailable',
+			'200':'Success',
+			'404':'Not Found'
+		},
+		'status_upgrades':{
+			'gather':true,
+			'involve':true,
+			'respond':true,
+			'terminal':true
+		},
+		'status':{
+			'FROM':resp,
+			'responses':stat_code
+		}
+	}
+
+	for i in range_of(len(hosts['status']['responses'])) then
+		if value of hosts['status']['responses'][i] == 503 then
+			hosts['status']['responses'][i] = hosts['status']['FROM'][i] + ' | '+hosts['status_codes']['503'] + ' | ' + STRING(stat_code[i])
+		if value of hosts['status']['responses'][i] == 200 then
+			hosts['status']['responses'][i] = hosts['status']['FROM'][i] + ' | '+hosts['status_codes']['200'] + ' | ' + STRING(stat_code[i])
+		if value of hosts['status']['responses'][i] == 404 then
+			hosts['status']['responses'][i] = hosts['status']['FROM'][i] + ' | '+hosts['status_codes']['404'] + ' | ' + STRING(stat_code[i])
+	
+	write_file('status_info.json','w') use as file then
+		to_load = hosts['status']
+		to_json = json.dumps(to_load,indent=2,sort_keys=False)
+		file.send(to_json)
+		file.close()
+	
+	print(open_file('status_info.json','r').read_value())
